@@ -11,7 +11,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "myfirststack-csye6225-vpc"
+                        "Value": "STACK_NAME-csye6225-vpc"
                     },
                     {
                         "Key": "Application",
@@ -166,7 +166,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "myfirststack-csye6225-InternetGateway"
+                        "Value": "STACK_NAME-csye6225-InternetGateway"
                     },
                     {
                         "Key": "Application",
@@ -197,7 +197,7 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "myfirststack-csye6225-public-route-table"
+                        "Value": "STACK_NAME-csye6225-public-route-table"
                     },
                     {
                         "Key": "Application",
