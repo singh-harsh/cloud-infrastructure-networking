@@ -107,6 +107,16 @@ aws ec2 create-tags \
     echo " Tag Name not Added to Public Subnet 1"
   fi
 
+ 
+# Enable Auto-assign Public IP on Public Subnet
+aws ec2 modify-subnet-attribute \
+  --subnet-id $SUBNET_PUBLIC_ID_1 \
+  --map-public-ip-on-launch \
+  --region $AWS_REGION
+echo "  'Auto-assign Public IP' ENABLED on Public Subnet ID" \
+  "$SUBNET_PUBLIC_ID_1"
+
+
 # Create Private Subnet 2
 echo "Creating Private Subnet 2..."
 SUBNET_PRIVATE_ID_2=$(aws ec2 create-subnet \
@@ -158,6 +168,13 @@ aws ec2 create-tags \
 echo "  Subnet ID '$SUBNET_PUBLIC_ID_2' NAMED as" \
   "'$SUBNET_PUBLIC_NAME_2'."
 
+# Enable Auto-assign Public IP on Public Subnet
+aws ec2 modify-subnet-attribute \
+  --subnet-id $SUBNET_PUBLIC_ID_2 \
+  --map-public-ip-on-launch \
+  --region $AWS_REGION
+echo "  'Auto-assign Public IP' ENABLED on Public Subnet ID" \
+  "$SUBNET_PUBLIC_ID_2"
 
 # Create Private Subnet 3
 echo "Creating Private Subnet 3..."
@@ -197,6 +214,14 @@ aws ec2 create-tags \
   --region $AWS_REGION
 echo "  Subnet ID '$SUBNET_PUBLIC_ID_3' NAMED as" \
   "'$SUBNET_PUBLIC_NAME_3'."
+
+# Enable Auto-assign Public IP on Public Subnet
+aws ec2 modify-subnet-attribute \
+  --subnet-id $SUBNET_PUBLIC_ID_3 \
+  --map-public-ip-on-launch \
+  --region $AWS_REGION
+echo "  'Auto-assign Public IP' ENABLED on Public Subnet ID" \
+  "$SUBNET_PUBLIC_ID_3"
 
 # Create Internet gateway
 echo "Creating Internet Gateway..."
