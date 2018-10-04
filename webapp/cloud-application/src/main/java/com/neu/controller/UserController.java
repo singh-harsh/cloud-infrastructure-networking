@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 
-
-@RestController
+@RestController("/")
 public class UserController {
 
     private static final Log LOGGER = LogFactory.getLog(UserController.class);
@@ -33,7 +32,7 @@ public class UserController {
         LOGGER.debug("Request received for account creation!!");
         System.out.println("Request received for account creation!!");
         // Add account to database
-        if(!userRepository.existsByEmail(account.getEmail())) {
+        if (!userRepository.existsByEmail(account.getEmail())) {
             LOGGER.debug("Account does not exist!!");
             LOGGER.debug(account.getPassword());
             userRepository.save(account);
