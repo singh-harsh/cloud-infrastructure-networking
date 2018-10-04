@@ -36,12 +36,23 @@ public class TransactionController {
 
     @GetMapping(value = "/transaction/view")
     public ResponseEntity<List<Transaction>> viewTransaction(Authentication authentication) {
-        
+	List<Transaction> transactionByAccount_email = transactionRepository.findTransactionByAccount_Email(authentication.getName());
+        return new ResponseEntity<>(transactionByAccount_email, HttpStatus.OK);
     }
 
     @PutMapping(value = "/transaction/update/{id}")
     public ResponseEntity<?> updateTransaction(@PathVariable String id, Authentication authentication, @RequestBody @Valid Transaction transaction) {
-       
+        if (!Transaction.isEmpty(transaction)) {
+            Transaction trans = transactionRepository.findTransactionByIdAndAccount_Email(id, authentication.getName());
+            trans.setAmount(transaction.getAmount());
+            trans.setMerchant(transaction.getMerchant());
+            trans.setCategory(transaction.getCategory());
+            trans.setDate(transaction.getDate());
+            trans.setDescription(transaction.getDescription());
+            transactionRepository.save(trans);
+            return new ResponseEntity<Transaction>(trans, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<String>("Invalid Inputs", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/transaction/delete/{id}")
