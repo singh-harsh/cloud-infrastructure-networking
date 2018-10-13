@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class CloudApplicationMain {
 
-    private static final Log LOGGER = LogFactory.getLog(CloudApplicationMain.class);
     public static void main(String[] args) {
         SpringApplication.run(CloudApplicationMain.class, args);
     }

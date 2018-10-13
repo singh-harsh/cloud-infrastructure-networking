@@ -1,11 +1,11 @@
 package com.neu.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.json.JSONPropertyIgnore;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class Transaction {
@@ -36,6 +36,9 @@ public class Transaction {
     @JsonIgnore
     @ManyToOne
     private Account account;
+
+    @OneToMany
+    private List<Attachment> attachments;
 
     public String getId() {
         return id;
@@ -91,6 +94,14 @@ public class Transaction {
 
     public void setAccount(Account account) {
         this.account = account;
+    }
+
+    public List<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
     public static boolean isEmpty(Transaction trans) {
