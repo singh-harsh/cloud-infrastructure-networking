@@ -24,7 +24,6 @@ public class FileService extends StorageService {
 
     @Value("${dev.fileStoragePath}")
     private String FILE_STORAGE_PATH;
-    private static final Log LOGGER = LogFactory.getLog(FileService.class);
 
     public FileService() {
 
@@ -41,7 +40,6 @@ public class FileService extends StorageService {
                 throw new InvalidFileException("File extension not valid");
             }
             byte[] bytes = file.getBytes();
-            LOGGER.info(FILE_STORAGE_PATH);
             Path path = Paths.get(FILE_STORAGE_PATH + idAttachment + "." + extension);
             Files.write(path, bytes);
             Files.write(path, bytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
