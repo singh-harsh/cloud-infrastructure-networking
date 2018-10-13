@@ -182,7 +182,7 @@
 }
 }
 },
-"MyRouteTable": {
+"MyPublicRouteTable": {
 "Type": "AWS::EC2::RouteTable",
 "Properties": {
 "VpcId": {
@@ -202,6 +202,26 @@
 ]
 }
 },
+"MyPrivateRouteTable": {
+"Type": "AWS::EC2::RouteTable",
+"Properties": {
+"VpcId": {
+"Ref": "MyVpc"
+},
+"Tags": [
+{
+"Key": "Name",
+"Value": "NetStack-csye6225-private-route-table"
+},
+{
+"Key": "Application",
+"Value": {
+"Ref": "AWS::StackName"
+}
+}
+]
+}
+},
 "Subnet1RouteTableAssociation": {
 "Type": "AWS::EC2::SubnetRouteTableAssociation",
 "Properties": {
@@ -209,7 +229,7 @@
 "Ref": "PublicSubnet1"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPublicRouteTable"
 }
 }
 },
@@ -220,7 +240,7 @@
 "Ref": "PrivateSubnet2"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPrivateRouteTable"
 }
 }
 },
@@ -231,7 +251,7 @@
 "Ref": "PublicSubnet3"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPublicRouteTable"
 }
 }
 },
@@ -242,7 +262,7 @@
 "Ref": "PrivateSubnet4"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPrivateRouteTable"
 }
 }
 },
@@ -253,7 +273,7 @@
 "Ref": "PublicSubnet5"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPublicRouteTable"
 }
 }
 },
@@ -264,7 +284,7 @@
 "Ref": "PrivateSubnet6"
 },
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPrivateRouteTable"
 }
 }
 },
@@ -273,7 +293,7 @@
 "DependsOn": "AttachGateway",
 "Properties": {
 "RouteTableId": {
-"Ref": "MyRouteTable"
+"Ref": "MyPublicRouteTable"
 },
 "DestinationCidrBlock": "0.0.0.0/0",
 "GatewayId": {
@@ -292,13 +312,22 @@
 "Name": "Networking-VpcId"
 }
 },
-"SubnetId": {
-"Description": "Subnet Id",
+"SubnetId1": {
+"Description": "Subnet Id 1",
 "Value": {
 "Ref": "PublicSubnet1"
 },
 "Export": {
 "Name": "Networking-SubnetId"
+}
+},
+"SubnetId2": {
+"Description": "Subnet Id 2",
+"Value": {
+"Ref": "PublicSubnet3"
+},
+"Export": {
+"Name": "Networking-SubnetId2"
 }
 }
 }

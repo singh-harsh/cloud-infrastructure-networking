@@ -1,5 +1,11 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
+    "Parameters": {
+        "s3BucketName": {
+            "Type": "String",
+            "Default": "csye6225-fall2018-singhhar.me.csye6225.com"
+        }
+    },
     "Description": "Ec2 block device mapping",
     "Resources": {
         "WebInstanceSecurityGroup": {
@@ -47,9 +53,11 @@
                 "SecurityGroupIngress": [
                     {
                         "IpProtocol": "tcp",
-                        "FromPort": 5432,
-                        "ToPort": 5432,
-                        "CidrIp": "0.0.0.0/0"
+                        "FromPort": 3306,
+                        "ToPort": 3306,
+                        "SourceSecurityGroupId": {
+                            "Ref": "WebInstanceSecurityGroup"
+                        }
                     }
                 ],
                 "Tags": [
@@ -65,14 +73,21 @@
             "Properties": {
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
+                "SecurityGroupIds": [
+                    {
+                        "Ref": "WebInstanceSecurityGroup"
+                    }
+                ],
                 "KeyName": "csye6225",
-                "DisableApiTermination": true,               
+                "SubnetId": {
+                    "Fn::ImportValue": "Networking-SubnetId"
+                },
                 "BlockDeviceMappings": [
                     {
                         "DeviceName": "/dev/sdm",
                         "Ebs": {
                             "VolumeType": "gp2",
-                            "DeleteOnTermination": "false",
+                            "DeleteOnTermination": "true",
                             "VolumeSize": "20"
                         }
                     },
@@ -91,6 +106,94 @@
                         "Value": {
                             "Ref": "AWS::StackName"
                         }
+                    }
+                ]
+            }
+        },
+        "MyDynamoDBTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "Id",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "AttributeName": "Id",
+                        "KeyType": "HASH"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "5",
+                    "WriteCapacityUnits": "5"
+                },
+                "TableName": "csye6225",
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "csye6225-DynamoDB"
+                    },
+                    {
+                        "Key": "Application",
+                        "Value": {
+                            "Ref": "AWS::StackName"
+                        }
+                    }
+                ]
+            }
+        },
+        "RecordServiceS3Bucket": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref": "s3BucketName"
+                }
+            }
+        },
+        "myDBSubnetGroup": {
+            "Type": "AWS::RDS::DBSubnetGroup",
+            "Properties": {
+                "DBSubnetGroupDescription": "Db Subnet Group",
+                "SubnetIds": [
+                    {
+                        "Fn::ImportValue": "Networking-SubnetId"
+                    },
+                    {
+                        "Fn::ImportValue": "Networking-SubnetId2"
+                    }
+                ]
+            }
+        },
+        "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "DBName": "csye6225",
+                "DBInstanceClass": "db.t2.medium",
+                "MultiAZ": "false",
+                "DBInstanceIdentifier": "csye6225-fall2018",
+                "DBSubnetGroupName": {
+                    "Ref": "myDBSubnetGroup"
+                },
+                "Engine": "MySQL",
+                "EngineVersion": "5.5.59",
+                "MasterUsername": "csye6225master",
+                "MasterUserPassword": "csye6225password",
+                "PubliclyAccessible": "false",
+                "AllocatedStorage": "20",
+                "VPCSecurityGroups": [
+                    {
+                        "Fn::GetAtt": [
+                            "DbInstanceSecurityGroup",
+                            "GroupId"
+                        ]
+                    }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": "My SQL Database"
                     }
                 ]
             }

@@ -4,7 +4,7 @@
 ########################################
 read -p "Enter stack name: " STACK_NAME_1
 
-EC2_INSTANCE_ID=$(aws ec2 describe-instances --query Reservations[].Instances[].InstanceId --output text)
+EC2_INSTANCE_ID=$(aws cloudformation describe-stack-resource --stack-name $STACK_NAME_1 --logical-resource-id "MyEC2Instance" --query StackResourceDetail.PhysicalResourceId --output text)
 
 echo EC2 instance with id $EC2_INSTANCE_ID found
 echo "Disabling ec2 instance..."
