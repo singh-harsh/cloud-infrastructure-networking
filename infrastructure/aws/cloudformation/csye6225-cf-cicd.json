@@ -1,0 +1,375 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Ec2 block device mapping",
+    "Parameters": {
+        "s3BucketCodeDeployName": {
+            "Type": "String",
+            "Default": "code-deploy.csye6225-fall2018-singhhar.me.TLD"
+        },
+        "region": {
+            "Type": "String",
+            "Default": "us-east-1"
+        },
+        "account": {
+            "Type": "String",
+            "Default": ""
+        },
+        "travisIAMUsername": {
+            "Type": "String",
+            "Default": ""
+        },
+        "Ec2TagValue": {
+            "Type": "String",
+            "Default": ""
+        },
+        "s3BucketWebApiName": {
+            "Type": "String",
+            "Default": ""
+        }
+    },
+    "Resources": {
+        "Ec2ServiceRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "RoleName": "Ec2ServiceRole"
+            }
+        },
+        "S3BucketCodeDeploy": {
+            "Type": "AWS::S3::Bucket",
+            "Properties": {
+                "BucketName": {
+                    "Ref": "s3BucketCodeDeployName"
+                }
+            }
+        },
+        "EC2CodeDeployS3Policy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CodeDeploy-EC2-S3",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:Get*",
+                                "s3:List*"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3BucketCodeDeployName"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "Ec2ServiceRole"
+                    }
+                ]
+            }
+        },
+        "EC2S3Policy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "EC2-S3-Policy",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:Get*",
+                                "s3:List*",
+                                "s3:Put*",
+                                "s3:Delete*"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3BucketWebApiName"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "Ec2ServiceRole"
+                    }
+                ]
+            }
+        },
+        "CodeDeployRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+                ],
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "codedeploy.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "RoleName": "CodeDeployRole"
+            }
+        },
+        "CodeDeployRolePolicies": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "Travis-Code-Deploy",
+                "Users": [
+                    {
+                        "Ref": "travisIAMUsername"
+                    }
+                ],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "codedeploy:RegisterApplicationRevision",
+                                "codedeploy:GetApplicationRevision"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:codedeploy:",
+                                            {
+                                                "Ref": "region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "account"
+                                            },
+                                            ":application:CodeDeployMyWebApi"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "codedeploy:CreateDeployment",
+                                "codedeploy:GetDeployment"
+                            ],
+                            "Resource": [
+                                "*"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "codedeploy:GetDeploymentConfig"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:codedeploy:",
+                                            {
+                                                "Ref": "region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "account"
+                                            },
+                                            ":deploymentconfig:CodeDeployDefault.OneAtATime"
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:codedeploy:",
+                                            {
+                                                "Ref": "region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "account"
+                                            },
+                                            ":deploymentconfig:CodeDeployDefault.HalfAtATime"
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:codedeploy:",
+                                            {
+                                                "Ref": "region"
+                                            },
+                                            ":",
+                                            {
+                                                "Ref": "account"
+                                            },
+                                            ":deploymentconfig:CodeDeployDefault.AllAtOnce"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "TravisRolePolicies": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "Travis-Upload-To-S3",
+                "Users": [
+                    {
+                        "Ref": "travisIAMUsername"
+                    }
+                ],
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "s3:PutObject"
+                            ],
+                            "Resource": [
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3BucketCodeDeployName"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        },
+        "MyInstanceProfile": {
+            "Type": "AWS::IAM::InstanceProfile",
+            "Properties": {
+                "Path": "/",
+                "InstanceProfileName": "CodeDeployEC2ServiceRoleProfile",
+                "Roles": [
+                    {
+                        "Ref": "Ec2ServiceRole"
+                    }
+                ]
+            }
+        },
+        "CodeDeployApplication": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ApplicationName": "CodeDeployMyWebApi"
+            }
+        },
+        "DeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplication"
+                },
+                "DeploymentConfigName": "CodeDeployDefault.OneAtATime",
+                "DeploymentGroupName": "CodeDeployApplicationGroup",
+                "DeploymentStyle": {
+                    "DeploymentType": "IN_PLACE",
+                    "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
+                },
+                "Ec2TagFilters": [
+                    {
+                        "Key": "Name",
+                        "Type": "KEY_AND_VALUE",
+                        "Value": {
+                            "Ref": "Ec2TagValue"
+                        }
+                    }
+                ],
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployRole",
+                        "Arn"
+                    ]
+                }
+            }
+        }
+    },
+    "Outputs": {
+        "InstanceProfile": {
+            "Description": "Instance Profile",
+            "Value": {
+                "Ref": "MyInstanceProfile"
+            },
+            "Export": {
+                "Name": "cicdInstanceProfile"
+            }
+        },
+        "S3BucketNameWebApi": {
+            "Description": "Web Api S3 Bucket Name",
+            "Value": {
+                "Ref": "s3BucketWebApiName"
+            },
+            "Export": {
+                "Name": "s3BucketNameWebApi"
+            }
+        }
+    }
+}

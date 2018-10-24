@@ -1,11 +1,5 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Parameters": {
-        "s3BucketName": {
-            "Type": "String",
-            "Default": "csye6225-fall2018-singhhar.me.csye6225.com"
-        }
-    },
     "Description": "Ec2 block device mapping",
     "Resources": {
         "WebInstanceSecurityGroup": {
@@ -73,6 +67,20 @@
             "Properties": {
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
+                "UserData": {
+                    "Fn::Base64": {
+                        "Fn::Join": [
+                            "\n",
+                            [
+                                "#!/bin/bash -xe",
+                                "pwd",
+                                "cd ~",
+                                "ls -al"
+                            ]
+                        ]
+                    }
+                },
+
                 "SecurityGroupIds": [
                     {
                         "Ref": "WebInstanceSecurityGroup"
@@ -81,6 +89,9 @@
                 "KeyName": "csye6225",
                 "SubnetId": {
                     "Fn::ImportValue": "Networking-SubnetId"
+                },
+                "IamInstanceProfile": {
+                    "Fn::ImportValue": "cicdInstanceProfile"
                 },
                 "BlockDeviceMappings": [
                     {
@@ -148,7 +159,7 @@
             "Type": "AWS::S3::Bucket",
             "Properties": {
                 "BucketName": {
-                    "Ref": "s3BucketName"
+                    "Fn::ImportValue": "s3BucketNameWebApi"
                 }
             }
         },

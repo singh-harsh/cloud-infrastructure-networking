@@ -2,9 +2,10 @@
 ########################################
 ### AWS APPLICATION DELETION SCRIPT#######
 ########################################
-read -p "Enter stack name: " STACK_NAME_1
 
-EC2_INSTANCE_ID=$(aws cloudformation describe-stack-resource --stack-name $STACK_NAME_1 --logical-resource-id "MyEC2Instance" --query StackResourceDetail.PhysicalResourceId --output text)
+read -p "Enter application stack name: " applicationStackName
+
+EC2_INSTANCE_ID=$(aws cloudformation describe-stack-resource --stack-name $applicationStackName --logical-resource-id "MyEC2Instance" --query StackResourceDetail.PhysicalResourceId --output text)
 
 echo EC2 instance with id $EC2_INSTANCE_ID found
 echo "Disabling ec2 instance..."
@@ -25,28 +26,18 @@ if [ $? -eq 0 ]; then
     exit 1
  fi
 
-
-echo "Deleting stack '$STACK_NAME_1'..."
-aws cloudformation delete-stack --stack-name $STACK_NAME_1
-aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME_1
-
-DeletedStackList=$(aws cloudformation list-stacks --stack-status-filter DELETE_COMPLETE --query "StackSummaries[*].StackName" --output text)
-if [[ $DeletedStackList = *"$STACK_NAME_1"* ]]; then
-    echo "Stack $STACK_NAME_1 deleted successfully"
-    else
-    echo "Stack $STACK_NAME_1 does not exist"
-    exit 1
-fi
-
-read -p "Enter stack name: " STACK_NAME_2
-echo "Deleting stack '$STACK_NAME_2'..."
-aws cloudformation delete-stack --stack-name $STACK_NAME_2
-aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME_2
+echo "Deleting stack '$applicationStackName'..."
+webApiS3Bucket=$(aws cloudformation describe-stack-resource --stack-name $applicationStackName --logical-resource-id "RecordServiceS3Bucket" --query StackResourceDetail.PhysicalResourceId --output text)
+echo "Emptying the S3 bucket..."
+aws s3 rm s3://$webApiS3Bucket --recursive
+aws cloudformation delete-stack --stack-name $applicationStackName
+aws cloudformation wait stack-delete-complete --stack-name $applicationStackName
 
 DeletedStackList=$(aws cloudformation list-stacks --stack-status-filter DELETE_COMPLETE --query "StackSummaries[*].StackName" --output text)
-if [[ $DeletedStackList = *"$STACK_NAME_2"* ]]; then
-    echo "Stack $STACK_NAME_2 deleted successfully"
+if [[ $DeletedStackList = *"$applicationStackName"* ]]; then
+    echo "Stack $applicationStackName deleted successfully"
     else
-    echo "Stack $STACK_NAME_2 does not exist"
+    echo "Stack $applicationStackName does not exist"
     exit 1
 fi
+sh ./csye6225-aws-cf-terminate-cicd-stack.sh
