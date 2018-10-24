@@ -11,8 +11,8 @@
             "Type": "AWS::EC2::VPC",
             "Properties": {
                 "CidrBlock": "10.0.0.0/16",
-                "EnableDnsSupport": "false",
-                "EnableDnsHostnames": "false",
+                "EnableDnsSupport": "true",
+                "EnableDnsHostnames": "true",
                 "InstanceTenancy": "default",
                 "Tags": [
                     {
@@ -44,7 +44,7 @@
                 "VpcId": {
                     "Ref": "MyVpc"
                 },
-                "MapPublicIpOnLaunch": true,
+                "MapPublicIpOnLaunch": "true",
                 "CidrBlock": "10.0.1.0/24",
                 "AvailabilityZone": "us-east-1a",
                 "Tags": [
@@ -84,7 +84,7 @@
                 "VpcId": {
                     "Ref": "MyVpc"
                 },
-                "MapPublicIpOnLaunch": true,
+                "MapPublicIpOnLaunch": "true",
                 "CidrBlock": "10.0.3.0/24",
                 "AvailabilityZone": "us-east-1b",
                 "Tags": [
@@ -130,7 +130,7 @@
                 "VpcId": {
                     "Ref": "MyVpc"
                 },
-                "MapPublicIpOnLaunch": true,
+                "MapPublicIpOnLaunch": "true",
                 "CidrBlock": "10.0.5.0/24",
                 "AvailabilityZone": "us-east-1c",
                 "Tags": [
