@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:             
-  - source: ./webapp/build/libs/cloud-application.war
+  - source: ./webapp/cloud-application/target/cloud-application.war
     destination: /opt/tomcat/webapps
 
 hooks:
