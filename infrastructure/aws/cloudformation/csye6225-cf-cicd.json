@@ -122,15 +122,6 @@
                                             },
                                             "/*"
                                         ]
-                                    ],
-                                    "Fn::Join": [
-                                        "",
-                                        [
-                                            "arn:aws:s3:::",
-                                            {
-                                                "Ref": "s3BucketWebApiName"
-                                            }
-                                        ]
                                     ]
                                 }
                             ]
