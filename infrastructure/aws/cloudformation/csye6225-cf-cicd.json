@@ -107,8 +107,8 @@
                             "Effect": "Allow",
                             "Action": [
                                 "s3:Get*",
-                                "s3:List*",
                                 "s3:Put*",
+                                "s3:List*",
                                 "s3:Delete*"
                             ],
                             "Resource": [
@@ -121,6 +121,15 @@
                                                 "Ref": "s3BucketWebApiName"
                                             },
                                             "/*"
+                                        ]
+                                    ],
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3BucketWebApiName"
+                                            }
                                         ]
                                     ]
                                 }
