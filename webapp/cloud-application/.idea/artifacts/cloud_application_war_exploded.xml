@@ -59,7 +59,7 @@
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-config:5.0.8.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-core:5.0.8.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework.security:spring-security-web:5.0.8.RELEASE" />
-          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:5.1.47" />
+          <element id="library" level="project" name="Maven: mysql:mysql-connector-java:6.0.5" />
           <element id="library" level="project" name="Maven: io.rest-assured:rest-assured:3.0.3" />
           <element id="library" level="project" name="Maven: org.codehaus.groovy:groovy:2.4.15" />
           <element id="library" level="project" name="Maven: org.codehaus.groovy:groovy-xml:2.4.15" />

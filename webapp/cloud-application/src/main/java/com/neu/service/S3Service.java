@@ -1,5 +1,6 @@
 package com.neu.service;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -70,7 +71,8 @@ public class S3Service extends StorageService {
 
     @PostConstruct
     public void setupClient() {
-        this.amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1)
+        InstanceProfileCredentialsProvider provider = new InstanceProfileCredentialsProvider(true);
+        this.amazonS3 = AmazonS3ClientBuilder.standard().withCredentials(provider).withRegion(Regions.US_EAST_1)
                 .build();
     }
 
