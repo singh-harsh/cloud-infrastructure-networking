@@ -50,7 +50,7 @@ public class S3Service extends StorageService {
             if (!validateFile(fileName))
                 throw new InvalidFileException("File extension not valid");
             String extension = split[split.length - 1];
-            File newFile = new File(idAttachments + "." + extension);
+            File newFile = new File("~/" + idAttachments + "." + extension);
             FileOutputStream fos = new FileOutputStream(newFile);
             fos.write(file.getBytes());
             fos.close();
