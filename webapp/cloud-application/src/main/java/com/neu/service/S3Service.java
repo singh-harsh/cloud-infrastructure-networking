@@ -1,5 +1,6 @@
 package com.neu.service;
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -12,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,8 +29,6 @@ import java.io.IOException;
 public class S3Service extends StorageService {
 
     private static final Log LOGGER = LogFactory.getLog(S3Service.class);
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     @Value("${aws.bucketName}")
     private String bucketName;
@@ -50,7 +50,9 @@ public class S3Service extends StorageService {
             if (!validateFile(fileName))
                 throw new InvalidFileException("File extension not valid");
             String extension = split[split.length - 1];
-            File newFile = new File(idAttachments + "." + extension);
+            File newFile = new File("/tmp", idAttachments + "." + extension);
+            if(!newFile.exists())
+                newFile.createNewFile();
             FileOutputStream fos = new FileOutputStream(newFile);
             fos.write(file.getBytes());
             fos.close();
@@ -71,7 +73,8 @@ public class S3Service extends StorageService {
 
     @PostConstruct
     public void setupClient() {
-        this.amazonS3 = AmazonS3ClientBuilder.standard().withRegion(Regions.US_EAST_1)
+        InstanceProfileCredentialsProvider provider = new InstanceProfileCredentialsProvider(true);
+        this.amazonS3 = AmazonS3ClientBuilder.standard().withCredentials(provider).withRegion(Regions.US_EAST_1)
                 .build();
     }
 
