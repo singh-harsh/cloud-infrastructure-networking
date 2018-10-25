@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -27,8 +28,6 @@ import java.io.IOException;
 public class S3Service extends StorageService {
 
     private static final Log LOGGER = LogFactory.getLog(S3Service.class);
-    @Autowired
-    private ResourceLoader resourceLoader;
 
     @Value("${aws.bucketName}")
     private String bucketName;
