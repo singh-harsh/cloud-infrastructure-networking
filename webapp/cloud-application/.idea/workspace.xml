@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6f877b30-ee67-4c93-b4c9-584943489037" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/neu/service/S3Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/neu/service/S3Service.java" afterDir="false" />
-    </list>
+    <list default="true" id="6f877b30-ee67-4c93-b4c9-584943489037" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -252,8 +250,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/neu/service/S3Service.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
+            <state relative-caret-position="567">
+              <caret line="70" column="27" selection-start-line="70" selection-start-column="27" selection-end-line="70" selection-end-column="27" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -587,7 +585,7 @@
       <workItem from="1540391180483" duration="933000" />
       <workItem from="1540398623720" duration="3573000" />
       <workItem from="1540420699522" duration="6508000" />
-      <workItem from="1540438765463" duration="6432000" />
+      <workItem from="1540438765463" duration="6658000" />
     </task>
     <servers />
   </component>
@@ -624,7 +622,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87622000" />
+    <option name="totallyTimeSpent" value="87848000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -922,8 +920,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/neu/service/S3Service.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="53" column="41" selection-start-line="53" selection-start-column="41" selection-end-line="53" selection-end-column="41" />
+        <state relative-caret-position="567">
+          <caret line="70" column="27" selection-start-line="70" selection-start-column="27" selection-end-line="70" selection-end-column="27" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
