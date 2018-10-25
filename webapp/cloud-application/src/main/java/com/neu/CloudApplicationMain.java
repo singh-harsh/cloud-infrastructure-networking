@@ -13,12 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class CloudApplicationMain extends SpringBootServletInitializer {
 
-    public static final Log LOGGER = LogFactory.getLog(CloudApplicationMain.class);
-
-    @Value("${spring.datasource.driver-class-name}")
-    private static String className;
     public static void main(String[] args) {
-        LOGGER.info(className);
         SpringApplication.run(CloudApplicationMain.class, args);
     }
 }
