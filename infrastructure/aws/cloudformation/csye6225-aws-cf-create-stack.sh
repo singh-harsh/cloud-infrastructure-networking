@@ -1,5 +1,5 @@
 #NETWORK STACK CREATION
-read -p "Enter network stack name" networkStackname
+read -p "Enter network stack name: " networkStackname
 echo "Creating network stack '$networkStackname' using cloudformation template csye6225-cf-networking.json..."
 aws cloudformation create-stack --stack-name $networkStackname --template-body file://csye6225-cf-networking.json --parameters  ParameterKey=stackName,ParameterValue=$networkStackname
 aws cloudformation wait stack-create-complete --stack-name $networkStackname
