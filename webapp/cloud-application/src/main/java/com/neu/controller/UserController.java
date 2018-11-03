@@ -5,6 +5,8 @@ import com.neu.pojo.Account;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -26,15 +28,16 @@ public class UserController {
 
     @RequestMapping(value = "/user/register", method = RequestMethod.POST)
     @ResponseBody
-    public String registerUser(@RequestBody Account account) {
+    public ResponseEntity<String> registerUser(@RequestBody Account account) {
 
         if (!userRepository.existsByEmail(account.getEmail())) {
             LOGGER.debug("Account does not exist!!");
-            LOGGER.debug(account.getPassword());
+            if(!Account.VALID_EMAIL_ADDRESS_REGEX.matcher(account.getEmail()).matches()) {
+                return new ResponseEntity<>("Invalid email format", HttpStatus.PRECONDITION_FAILED);
+            }
             userRepository.save(account);
-            return "Account successfully created!!";
+            return new ResponseEntity<>("Account successfully created!!", HttpStatus.CREATED);
         }
-        return "Account already exists!!";
-
+        return new ResponseEntity<>("Account already exists!!", HttpStatus.BAD_REQUEST);
     }
 }

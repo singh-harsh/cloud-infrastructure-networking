@@ -80,7 +80,7 @@
                             [
                                 "#!/bin/bash -xe",
                                 "sudo yum update -y",
-                                "sudo yum install ruby ntp python wget java-1.8.0-openjdk-devel -y",
+                                "sudo yum install ruby ntp python mysql wget java-1.8.0-openjdk-devel -y",
                                 "sudo wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install",
                                 "sudo chmod +x ./install",
                                 "sudo ./install auto",
@@ -106,6 +106,8 @@
                                 "sudo echo 'export DIALECT=org.hibernate.dialect.MySQLDialect' >> bin/setenv.sh",
                                 "sudo echo 'export DRIVER=com.mysql.jdbc.Driver' >> bin/setenv.sh",
                                 "sudo echo 'export SPRING_PROFILES_ACTIVE=aws' >> bin/setenv.sh",
+                                "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
+                                "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
                                 {
                                   "Fn::Join": [
                                     "",
