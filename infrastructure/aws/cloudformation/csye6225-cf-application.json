@@ -295,7 +295,7 @@
         "PasswordResetLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "Handler": "index.handler",
+                "Handler": "com.neu.lambda.Handler",
                 "Role": {
                     "Fn::GetAtt": [
                         {
