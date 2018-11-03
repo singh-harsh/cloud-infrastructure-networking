@@ -47,7 +47,7 @@ public class AccountController {
     public ResponseEntity<String> resetPassword(@RequestParam String email) {
         if(accountRepository.existsByEmail(email)) {
             snsService.sendMessageToTopic(email);
-            return new ResponseEntity<>("SNS Notified", HttpStatus.CREATED);
+            return new ResponseEntity<>("SNS Notified", HttpStatus.OK);
         }
         return new ResponseEntity<>("Username does not exist!!", HttpStatus.PRECONDITION_FAILED);
     }
