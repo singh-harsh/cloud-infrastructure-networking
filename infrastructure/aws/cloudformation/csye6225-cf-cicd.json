@@ -350,6 +350,93 @@
                     ]
                 }
             }
+        },
+        "LambdaExceutionRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "lambda.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+                    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+                ],
+                "RoleName": "lambda-sns-execution-role"
+            }
+        },
+        "CloudWatchRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "Service": [
+                                    "ec2.amazonaws.com"
+                                ]
+                            },
+                            "Action": [
+                                "sts:AssumeRole"
+                            ]
+                        }
+                    ]
+                },
+                "Path": "/",
+                "RoleName": "CloudWatchRole",
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
+                    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+                ]
+            }
+        },
+        "CloudWatchPolicy": {
+            "Type": "AWS::IAM::Policy",
+            "Properties": {
+                "PolicyName": "CloudWatchLogsPolicy",
+                "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "logs:Create*",
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:DescribeLogStreams",
+                                "s3:GetObject"
+                            ],
+                            "Resource": [
+                                "arn:aws:logs:*:*:*",
+                                "arn:aws:s3:::*"
+                            ]
+                        }
+                    ]
+                },
+                "Roles": [
+                    {
+                        "Ref": "CloudWatchRole"
+                    }
+                ]
+            }
         }
     },
     "Outputs": {
@@ -369,6 +456,24 @@
             },
             "Export": {
                 "Name": "s3BucketNameWebApi"
+            }
+        },
+        "S3BucketNameCodeDeploy": {
+            "Description": "Code Deploy S3 Bucket Name",
+            "Value": {
+                "Ref": "S3BucketCodeDeploy"
+            },
+            "Export": {
+                "Name": "S3BucketCodeDeploy"
+            }
+        },
+        "LambdaRole": {
+            "Description": "Lambda Role",
+            "Value": {
+                "Ref": "LambdaExceutionRole"
+            },
+            "Export": {
+                "Name": "LambdaExceutionRole"
             }
         }
     }
