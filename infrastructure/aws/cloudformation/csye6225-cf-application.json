@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Ec2 block device mapping",
+    "Description": "Application stack",
     "Resources": {
         "WebInstanceSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
@@ -23,9 +23,9 @@
                         "CidrIp": "0.0.0.0/0"
                     },
                     {
-                        "IpProtocol":"tcp",
-                        "FromPort":8080,
-                        "ToPort":8080,
+                        "IpProtocol": "tcp",
+                        "FromPort": 8080,
+                        "ToPort": 8080,
                         "CidrIp": "0.0.0.0/0"
                     },
                     {
@@ -80,7 +80,7 @@
                             [
                                 "#!/bin/bash -xe",
                                 "sudo yum update -y",
-                                "sudo yum install ruby ntp python wget java-1.8.0-openjdk-devel -y",
+                                "sudo yum install ruby ntp python mysql wget java-1.8.0-openjdk-devel -y",
                                 "sudo wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install",
                                 "sudo chmod +x ./install",
                                 "sudo ./install auto",
@@ -106,30 +106,35 @@
                                 "sudo echo 'export DIALECT=org.hibernate.dialect.MySQLDialect' >> bin/setenv.sh",
                                 "sudo echo 'export DRIVER=com.mysql.jdbc.Driver' >> bin/setenv.sh",
                                 "sudo echo 'export SPRING_PROFILES_ACTIVE=aws' >> bin/setenv.sh",
+                                "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
+                                "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
+                                "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
                                 {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "sudo echo 'export URL=jdbc:mysql://",
-                                      {
-                                        "Fn::GetAtt": [
-                                          "MyDB",
-                                          "Endpoint.Address"
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "sudo echo 'export URL=jdbc:mysql://",
+                                            {
+                                                "Fn::GetAtt": [
+                                                    "MyDB",
+                                                    "Endpoint.Address"
+                                                ]
+                                            },
+                                            ":3306/csye6225' >> bin/setenv.sh"
                                         ]
-                                      },
-                                      ":3306/csye6225' >> bin/setenv.sh"
                                     ]
-                                  ]
                                 },
                                 {
-                                  "Fn::Join": [
-                                    "",
-                                    [
-                                      "sudo echo 'export BUCKETNAME=",
-                                      {"Ref" : "RecordServiceS3Bucket"},
-                                      "' >> bin/setenv.sh"
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "sudo echo 'export BUCKETNAME=",
+                                            {
+                                                "Ref": "RecordServiceS3Bucket"
+                                            },
+                                            "' >> bin/setenv.sh"
+                                        ]
                                     ]
-                                  ]
                                 },
                                 "cd /usr/lib/systemd/system",
                                 "touch tomcat.service",
@@ -285,6 +290,50 @@
                         "Value": "My SQL Database"
                     }
                 ]
+            }
+        },
+        "PasswordResetLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "com.neu.lambda.Handler",
+                "Role": {
+                    "Fn::GetAtt": [
+                        {
+                            "Fn::ImportValue": "LambdaRole"
+                        },
+                        "Arn"
+                    ]
+                },
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::ImportValue": "S3BucketCodeDeploy"
+                    },
+                    "S3Key": "csye6225-lambda.zip"
+                },
+                "Runtime": "java8",
+                "Timeout": 25,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        },
+        "SNSTopicPasswordReset": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "password_reset"
+            }
+        },
+        "LambdaResourcePolicy": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "PasswordResetLambda"
+                },
+                "Principal": "sns.amazonaws.com",
+                "Action": "lambda:InvokeFunction",
+                "SourceArn": {
+                    "Ref": "SNSTopicPasswordReset"
+                }
             }
         }
     }

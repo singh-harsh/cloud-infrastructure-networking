@@ -5,11 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.regex.Pattern;
 
 @Entity
 public class Account {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder(11);
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =  Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -44,7 +46,6 @@ public class Account {
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
     }
-
 
     @Override
     public String toString() {
