@@ -108,6 +108,7 @@
                                 "sudo echo 'export SPRING_PROFILES_ACTIVE=aws' >> bin/setenv.sh",
                                 "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
                                 "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
+                                "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
                                 {
                                   "Fn::Join": [
                                     "",

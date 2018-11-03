@@ -2,7 +2,7 @@ package com.neu.controller;
 
 import com.neu.data.AttachmentRepository;
 import com.neu.data.TransactionRepository;
-import com.neu.data.UserRepository;
+import com.neu.data.AccountRepository;
 import com.neu.pojo.Attachment;
 import com.neu.pojo.Transaction;
 import com.neu.service.StorageService;
@@ -31,7 +31,7 @@ public class TransactionController {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
     @Autowired
     private AttachmentRepository attachmentRepository;
 
@@ -40,7 +40,7 @@ public class TransactionController {
         if (!Transaction.isEmpty(transaction)) {
             String username = authentication.getName();
             transaction.setId(UUID.randomUUID().toString());
-            transaction.setAccount(userRepository.findUserByEmail(username));
+            transaction.setAccount(accountRepository.findUserByEmail(username));
             Transaction savedTransaction = transactionRepository.save(transaction);
             return new ResponseEntity<>(savedTransaction, HttpStatus.CREATED);
         }
