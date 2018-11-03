@@ -1,7 +1,7 @@
 package com.neu.authentication;
 
 
-import com.neu.data.UserRepository;
+import com.neu.data.AccountRepository;
 import com.neu.pojo.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class DetailsService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        Account account = userRepository.findUserByEmail(s);
+        Account account = accountRepository.findUserByEmail(s);
         if(account == null) {
             throw new UsernameNotFoundException("You are not logged in!!");
         }
