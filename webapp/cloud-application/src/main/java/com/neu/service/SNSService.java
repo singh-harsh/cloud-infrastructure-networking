@@ -22,7 +22,7 @@ public class SNSService {
     private static final Log LOGGER = LogFactory.getLog(SNSService.class);
 
     @Value("${topicName}")
-    private String topicName = "password_reset";
+    private String topicName;
 
     public void sendMessageToTopic(String email) {
         PublishRequest publishRequest = new PublishRequest(emailTopic.getTopicArn(), email);
@@ -41,6 +41,6 @@ public class SNSService {
                 return;
             }
         }
-        LOGGER.warn("The requested topic : " + topicName + " was not found");
+        LOGGER.error("The requested topic " + topicName + " was not found");
     }
 }
