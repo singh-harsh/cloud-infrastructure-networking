@@ -297,12 +297,7 @@
             "Properties": {
                 "Handler": "com.neu.lambda.Handler",
                 "Role": {
-                    "Fn::GetAtt": [
-                        {
-                            "Fn::ImportValue": "LambdaRole"
-                        },
-                        "Arn"
-                    ]
+                    "Fn::ImportValue": "LambdaExceutionRole"
                 },
                 "Code": {
                     "S3Bucket": {

@@ -376,7 +376,7 @@
                     "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
                     "arn:aws:iam::aws:policy/AmazonSESFullAccess"
                 ],
-                "RoleName": "lambda-sns-execution-role"
+                "RoleName": "LambdaSnsExecutionRole"
             }
         },
         "CloudWatchRole": {
@@ -470,7 +470,10 @@
         "LambdaRole": {
             "Description": "Lambda Role",
             "Value": {
-                "Ref": "LambdaExceutionRole"
+                "Fn::GetAtt": [
+                    "LambdaExceutionRole",
+                    "Arn"
+                ]
             },
             "Export": {
                 "Name": "LambdaExceutionRole"
