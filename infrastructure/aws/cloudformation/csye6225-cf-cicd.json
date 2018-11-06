@@ -374,7 +374,8 @@
                     "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
                     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
                     "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
-                    "arn:aws:iam::aws:policy/AmazonSESFullAccess"
+                    "arn:aws:iam::aws:policy/AmazonSESFullAccess",
+                    "arn:aws:iam::aws:policy/AWSXrayFullAccess"
                 ],
                 "RoleName": "LambdaSnsExecutionRole"
             }
@@ -436,45 +437,6 @@
                         "Ref": "CloudWatchRole"
                     }
                 ]
-            }
-        },
-        "PasswordResetLambda": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-                "Handler": "com.neu.lambda.Handler",
-                "Role": {
-                    "Ref": "LambdaExceutionRole"
-                },
-                "Code": {
-                    "S3Bucket": {
-                        "Ref": "S3BucketCodeDeploy"
-                    },
-                    "S3Key": "csye6225-lambda.zip"
-                },
-                "Runtime": "java8",
-                "Timeout": 25,
-                "TracingConfig": {
-                    "Mode": "Active"
-                }
-            }
-        },
-        "SNSTopicPasswordReset": {
-            "Type": "AWS::SNS::Topic",
-            "Properties": {
-                "TopicName": "password_reset"
-            }
-        },
-        "LambdaResourcePolicy": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "FunctionName": {
-                    "Ref": "PasswordResetLambda"
-                },
-                "Principal": "sns.amazonaws.com",
-                "Action": "lambda:InvokeFunction",
-                "SourceArn": {
-                    "Ref": "SNSTopicPasswordReset"
-                }
             }
         }
     },
