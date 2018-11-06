@@ -291,6 +291,23 @@
                     }
                 ]
             }
+        },
+        "SNSTopicPasswordReset": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "password_reset"
+            }
+        }
+    },
+    "Outputs": {
+        "SNSTopicPasswordReset": {
+            "Description": "SNS for password reset",
+            "Value": {
+                "Ref": "SNSTopicPasswordReset"
+            },
+            "Export": {
+                "Name": "snsTopicPasswordReset"
+            }
         }
     }
 }

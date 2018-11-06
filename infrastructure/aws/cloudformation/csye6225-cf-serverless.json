@@ -1,0 +1,39 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Application stack",
+    "Resources": {
+        "PasswordResetLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "com.neu.lambda.Handler",
+                "Role": {
+                    "Fn::ImportValue": "LambdaExceutionRole"
+                },
+                "Code": {
+                    "S3Bucket": {
+                        "Fn::ImportValue": "S3BucketCodeDeploy"
+                    },
+                    "S3Key": "csye6225-lambda.zip"
+                },
+                "Runtime": "java8",
+                "Timeout": 25,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        },
+        "LambdaResourcePolicy": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "PasswordResetLambda"
+                },
+                "Principal": "sns.amazonaws.com",
+                "Action": "lambda:InvokeFunction",
+                "SourceArn": {
+                    "Ref": "snsTopicPasswordReset"
+                }
+            }
+        }
+    }
+}

@@ -31,6 +31,9 @@
         "Ec2ServiceRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+                ],
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -379,6 +382,33 @@
                 "RoleName": "LambdaSnsExecutionRole"
             }
         },
+        "CodeDeployApplicationLambda": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ComputePlatform": "Lambda",
+                "ApplicationName": "aws-lambda-application"
+            }
+        },
+        "LabmdaDeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplicationLambda"
+                },
+                "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+                "DeploymentGroupName": "aws-lambda",
+                "DeploymentStyle": {
+                    "DeploymentType": "BLUE_GREEN",
+                    "DeploymentOption": "WITH_TRAFFIC_CONTROL"
+                },
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployRole",
+                        "Arn"
+                    ]
+                }
+            }
+        },
         "CloudWatchRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -436,45 +466,6 @@
                         "Ref": "CloudWatchRole"
                     }
                 ]
-            }
-        },
-        "PasswordResetLambda": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-                "Handler": "com.neu.lambda.Handler",
-                "Role": {
-                    "Ref": "LambdaExceutionRole"
-                },
-                "Code": {
-                    "S3Bucket": {
-                        "Ref": "S3BucketCodeDeploy"
-                    },
-                    "S3Key": "csye6225-lambda.zip"
-                },
-                "Runtime": "java8",
-                "Timeout": 25,
-                "TracingConfig": {
-                    "Mode": "Active"
-                }
-            }
-        },
-        "SNSTopicPasswordReset": {
-            "Type": "AWS::SNS::Topic",
-            "Properties": {
-                "TopicName": "password_reset"
-            }
-        },
-        "LambdaResourcePolicy": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "FunctionName": {
-                    "Ref": "PasswordResetLambda"
-                },
-                "Principal": "sns.amazonaws.com",
-                "Action": "lambda:InvokeFunction",
-                "SourceArn": {
-                    "Ref": "SNSTopicPasswordReset"
-                }
             }
         }
     },
