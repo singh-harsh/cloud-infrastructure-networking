@@ -383,33 +383,6 @@
                 "RoleName": "LambdaSnsExecutionRole"
             }
         },
-        "CodeDeployApplicationLambda": {
-            "Type": "AWS::CodeDeploy::Application",
-            "Properties": {
-                "ComputePlatform": "Lambda",
-                "ApplicationName": "aws-lambda-application"
-            }
-        },
-        "LabmdaDeploymentGroup": {
-            "Type": "AWS::CodeDeploy::DeploymentGroup",
-            "Properties": {
-                "ApplicationName": {
-                    "Ref": "CodeDeployApplicationLambda"
-                },
-                "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
-                "DeploymentGroupName": "aws-lambda",
-                "DeploymentStyle": {
-                    "DeploymentType": "BLUE_GREEN",
-                    "DeploymentOption": "WITH_TRAFFIC_CONTROL"
-                },
-                "ServiceRoleArn": {
-                    "Fn::GetAtt": [
-                        "CodeDeployRole",
-                        "Arn"
-                    ]
-                }
-            }
-        },
         "CloudWatchRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {

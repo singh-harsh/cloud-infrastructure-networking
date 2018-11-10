@@ -217,7 +217,7 @@
                         "AttributeType": "S"
                     }
                 ],
-                "TimeToLiveDescription": {
+                "TimeToLiveSpecification": {
                     "AttributeName": "ttl", 
                     "Enabled": true
                 },
