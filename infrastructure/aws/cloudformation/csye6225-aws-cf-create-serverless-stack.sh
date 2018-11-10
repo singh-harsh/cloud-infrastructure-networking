@@ -9,6 +9,3 @@ if [[ $CreatedStackList = *"$serverlessStackname"* ]]; then
     else
     echo "serverless Stack $stackname creation failed"
 fi
-
-#CICD STACK CREATION CALL
-sh ./csye6225-aws-cf-create-cicd-stack.sh

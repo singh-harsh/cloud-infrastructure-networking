@@ -228,7 +228,7 @@
                     },
                     {
                         "AttributeName": "Email",
-                        "KeyType": "HASH"
+                        "KeyType": "RANGE"
                     }
                 ],
                 "ProvisionedThroughput": {

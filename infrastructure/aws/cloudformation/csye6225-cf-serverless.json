@@ -10,9 +10,7 @@
                     "Fn::ImportValue": "LambdaExceutionRole"
                 },
                 "Code": {
-                    "S3Bucket": {
-                        "Fn::ImportValue": "S3BucketCodeDeploy"
-                    },
+                    "S3Bucket": "lambda.csye6225-fall2018-singhhar.me",
                     "S3Key": "csye6225-lambda.zip"
                 },
                 "Runtime": "java8",
@@ -31,7 +29,7 @@
                 "Principal": "sns.amazonaws.com",
                 "Action": "lambda:InvokeFunction",
                 "SourceArn": {
-                    "Ref": "snsTopicPasswordReset"
+                    "Fn::ImportValue": "snsTopicPasswordReset"
                 }
             }
         }
