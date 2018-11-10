@@ -211,11 +211,23 @@
                     {
                         "AttributeName": "Id",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "Email",
+                        "AttributeType": "S"
                     }
                 ],
+                "TimeToLiveDescription": {
+                    "AttributeName": "ttl", 
+                    "Enabled": true
+                },
                 "KeySchema": [
                     {
                         "AttributeName": "Id",
+                        "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "Email",
                         "KeyType": "HASH"
                     }
                 ],
