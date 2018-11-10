@@ -37,7 +37,7 @@ public class SNSService {
         ListTopicsResult topics = amazonSNS.listTopics();
         for(Topic topic : topics.getTopics()) {
             LOGGER.info(topic.toString() + " : " + topic.getTopicArn());
-            if(topic.toString().equals(topicName)) {
+            if(topic.toString().contains(topicName)) {
                 emailTopic = topic;
                 return;
             }
