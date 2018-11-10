@@ -35,7 +35,8 @@ public class AccountController {
         if (!accountRepository.existsByEmail(account.getEmail())) {
             LOGGER.debug("Account does not exist!!");
             if(!Account.VALID_EMAIL_ADDRESS_REGEX.matcher(account.getEmail()).matches()) {
-                return new ResponseEntity<>("Invalid email format", HttpStatus.PRECONDITION_FAILED);
+                return new ResponseEntity<>(
+                        "Invalid email format", HttpStatus.PRECONDITION_FAILED);
             }
             accountRepository.save(account);
             return new ResponseEntity<>("Account successfully created!!", HttpStatus.CREATED);
