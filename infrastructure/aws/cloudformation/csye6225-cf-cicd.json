@@ -31,6 +31,9 @@
         "Ec2ServiceRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
+                "ManagedPolicyArns": [
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+                ],
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
                     "Statement": [
@@ -378,6 +381,33 @@
                     "arn:aws:iam::aws:policy/AWSXrayFullAccess"
                 ],
                 "RoleName": "LambdaSnsExecutionRole"
+            }
+        },
+        "CodeDeployApplicationLambda": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ComputePlatform": "Lambda",
+                "ApplicationName": "aws-lambda-application"
+            }
+        },
+        "LabmdaDeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplicationLambda"
+                },
+                "DeploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce",
+                "DeploymentGroupName": "aws-lambda",
+                "DeploymentStyle": {
+                    "DeploymentType": "BLUE_GREEN",
+                    "DeploymentOption": "WITH_TRAFFIC_CONTROL"
+                },
+                "ServiceRoleArn": {
+                    "Fn::GetAtt": [
+                        "CodeDeployRole",
+                        "Arn"
+                    ]
+                }
             }
         },
         "CloudWatchRole": {

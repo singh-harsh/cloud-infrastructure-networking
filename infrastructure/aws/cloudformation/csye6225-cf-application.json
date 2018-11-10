@@ -309,6 +309,20 @@
             "Properties": {
                 "TopicName": "password_reset"
             }
+<<<<<<< HEAD
+=======
+        }
+    },
+    "Outputs": {
+        "SNSTopicPasswordReset": {
+            "Description": "SNS for password reset",
+            "Value": {
+                "Ref": "SNSTopicPasswordReset"
+            },
+            "Export": {
+                "Name": "snsTopicPasswordReset"
+            }
+>>>>>>> a945662dff010ff332cd06c272f94f8a22e0c832
         }
     }
 }
