@@ -5,7 +5,7 @@
         "PasswordResetLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
-                "Handler": "com.neu.lambda.Handler",
+                "Handler": "index.handler",
                 "Role": {
                     "Fn::ImportValue": "LambdaExceutionRole"
                 },
@@ -13,10 +13,25 @@
                     "S3Bucket": "lambda.csye6225-fall2018-singhhar.me",
                     "S3Key": "csye6225-lambda.zip"
                 },
-                "Runtime": "java8",
+                "Runtime": "nodejs8.10",
                 "Timeout": 25,
                 "TracingConfig": {
                     "Mode": "Active"
+                }
+            }
+        },
+        "MySubscription": {
+            "Type": "AWS::SNS::Subscription",
+            "Properties": {
+                "Endpoint": {
+                    "Fn::GetAtt": [
+                        "PasswordResetLambda",
+                        "Arn"
+                    ]
+                },
+                "Protocol": "lambda",
+                "TopicArn": {
+                    "Fn::ImportValue": "snsTopicPasswordReset"
                 }
             }
         },
