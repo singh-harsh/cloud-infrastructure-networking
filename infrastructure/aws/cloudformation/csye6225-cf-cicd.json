@@ -315,6 +315,9 @@
                 "Roles": [
                     {
                         "Ref": "Ec2ServiceRole"
+                    },
+                    {
+                        "Ref": "CloudWatchRole"
                     }
                 ]
             }
@@ -431,6 +434,16 @@
                             "Resource": [
                                 "arn:aws:logs:*:*:*",
                                 "arn:aws:s3:::*"
+                            ]
+                        },
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "cloudwatch:PutMetricData",
+                                "ec2:DescribeTags"
+                            ],
+                            "Resource": [
+                                "*"
                             ]
                         }
                     ]

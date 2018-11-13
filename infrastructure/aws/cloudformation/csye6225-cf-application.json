@@ -109,6 +109,7 @@
                                 "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
                                 "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
                                 "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
+                                "sudo echo 'export CATALINA_OUT=/logs/csye6225.log' >> bin/setenv.sh",
                                 {
                                     "Fn::Join": [
                                         "",
@@ -159,7 +160,26 @@
                                 "echo 'WantedBy=multi-user.target' >> tomcat.service",
                                 "systemctl daemon-reload",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service"
+                                "systemctl start tomcat.service",
+                                "sudo mkdir -p /tmp/AmazonCloudWatchAgent",
+                                "cd /tmp/AmazonCloudWatchAgent",
+                                "wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
+                                "sudo rpm -U ./amazon-cloudwatch-agent.rpm",
+                                "sudo aws configure --profile AmazonCloudWatchAgent",
+                                "cd /etc/systemd/system",
+                                "sudo touch cloudWatch.service",
+                                "sudo chmod 777 cloudWatch.service",
+                                "sudo echo '[Unit]' >> cloudWatch.service",
+                                "sudo echo 'Description=Service for CloudWatch agent' >> cloudWatch.service",
+                                "sudo echo 'After=rc-local.service' >> cloudWatch.service",
+                                "sudo echo '[Service]' >> cloudWatch.service",
+                                "sudo echo 'Type=simple' >> cloudWatch.service",
+                                "sudo echo 'Restart=always' >> cloudWatch.service",
+                                "sudo echo 'KillMode=process' >> cloudWatch.service",
+                                "sudo echo 'TimeoutSec=infinity' >> cloudWatch.service",
+                                "sudo echo 'ExecStart=/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s' >> cloudWatch.service",
+                                "sudo echo '[Install]' >> cloudWatch.service",
+                                "sudo echo 'WantedBy=multi-user.target' >> cloudWatch.service"
                             ]
                         ]
                     }
@@ -218,7 +238,7 @@
                     }
                 ],
                 "TimeToLiveSpecification": {
-                    "AttributeName": "ttl", 
+                    "AttributeName": "ttl",
                     "Enabled": true
                 },
                 "KeySchema": [
@@ -302,23 +322,6 @@
                         "Value": "My SQL Database"
                     }
                 ]
-            }
-        },
-        "SNSTopicPasswordReset": {
-            "Type": "AWS::SNS::Topic",
-            "Properties": {
-                "TopicName": "password_reset"
-            }
-        }
-    },
-    "Outputs": {
-        "SNSTopicPasswordReset": {
-            "Description": "SNS for password reset",
-            "Value": {
-                "Ref": "SNSTopicPasswordReset"
-            },
-            "Export": {
-                "Name": "snsTopicPasswordReset"
             }
         }
     }

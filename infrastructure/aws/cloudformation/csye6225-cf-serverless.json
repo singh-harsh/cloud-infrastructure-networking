@@ -2,6 +2,12 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Application stack",
     "Resources": {
+        "SNSTopicPasswordReset": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "password_reset"
+            }
+        },
         "PasswordResetLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
@@ -31,7 +37,10 @@
                 },
                 "Protocol": "lambda",
                 "TopicArn": {
-                    "Fn::ImportValue": "snsTopicPasswordReset"
+                    "Fn::GetAtt": [
+                        "SNSTopicPasswordReset",
+                        "Arn"
+                    ]
                 }
             }
         },
@@ -44,7 +53,10 @@
                 "Principal": "sns.amazonaws.com",
                 "Action": "lambda:InvokeFunction",
                 "SourceArn": {
-                    "Fn::ImportValue": "snsTopicPasswordReset"
+                    "Fn::GetAtt": [
+                        "SNSTopicPasswordReset",
+                        "Arn"
+                    ]
                 }
             }
         }
