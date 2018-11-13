@@ -37,10 +37,7 @@
                 },
                 "Protocol": "lambda",
                 "TopicArn": {
-                    "Fn::GetAtt": [
-                        "SNSTopicPasswordReset",
-                        "Arn"
-                    ]
+                    "Ref": "SNSTopicPasswordReset"
                 }
             }
         },
@@ -53,10 +50,7 @@
                 "Principal": "sns.amazonaws.com",
                 "Action": "lambda:InvokeFunction",
                 "SourceArn": {
-                    "Fn::GetAtt": [
-                        "SNSTopicPasswordReset",
-                        "Arn"
-                    ]
+                    "Ref": "SNSTopicPasswordReset"
                 }
             }
         }

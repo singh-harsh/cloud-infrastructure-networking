@@ -25,7 +25,6 @@ after_success:
   - zip -r csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip webapp/cloud-application/target/cloud-application.war *.sh *.yml
   - ls -al
   - mv csye6225-web-app-${TRAVIS_JOB_NUMBER}.zip codedeploy_artifact/
-  - mv infrastructure/aws/cloudformation/amazon-cloudwatch-agent.json /opt/aws/amazon-cloudwatch-agent/etc/
   - ls -al
   - pwd
   - cd codedeploy_artifact
