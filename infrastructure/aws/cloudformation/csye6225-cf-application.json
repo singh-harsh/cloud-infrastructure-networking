@@ -100,6 +100,8 @@
                                 "chmod g+x conf",
                                 "chown -R tomcat webapps/ work/ temp/ logs/ conf/",
                                 "sudo touch bin/setenv.sh",
+                                "sudo touch logs/csye6225.log",
+                                "sudo chmod 777 logs/csye6225.log",
                                 "sudo chmod 777 bin/setenv.sh",
                                 "sudo echo 'export USERNAME=csye6225master' >> bin/setenv.sh",
                                 "sudo echo 'export PASSWORD=csye6225password' >> bin/setenv.sh",
@@ -109,7 +111,6 @@
                                 "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
                                 "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
                                 "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
-                                "sudo echo 'export CATALINA_OUT=/logs/csye6225.log' >> bin/setenv.sh",
                                 {
                                     "Fn::Join": [
                                         "",
@@ -148,6 +149,7 @@
                                 "echo 'Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid' >> tomcat.service",
                                 "echo 'Environment=CATALINA_HOME=/opt/tomcat' >> tomcat.service",
                                 "echo 'Environment=CATALINA_BASE=/opt/tomcat' >> tomcat.service",
+                                "echo 'Environment=CATALINA_OUT=/opt/tomcat/logs/csye6225.log' >> tomcat.service",
                                 "echo 'Environment=\"CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC\"' >> tomcat.service",
                                 "echo 'ExecStart=/opt/tomcat/bin/startup.sh' >> tomcat.service",
                                 "echo 'ExecStop=/bin/kill -15 $MAINPID' >> tomcat.service",
