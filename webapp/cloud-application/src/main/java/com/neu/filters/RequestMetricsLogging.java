@@ -9,10 +9,9 @@ import javax.servlet.*;
 import java.io.IOException;
 
 @Component
-@Order(1)
 public class RequestMetricsLogging implements Filter {
 
-    private static final StatsDClient statsd = new NonBlockingStatsDClient("cloud-application-metrics", "statsd-host", 8125);
+    private static final StatsDClient statsd = new NonBlockingStatsDClient("cloud-application-metrics", "localhost", 8125);
 
 
     @Override

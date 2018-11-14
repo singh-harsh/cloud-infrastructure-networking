@@ -176,7 +176,7 @@
                                             "\"Agent\": { ",
                                             "\"metrics_collection_interval\": 60,",
                                             "\"region\": \"us-east-1\",",
-                                            "\"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\" },",
+                                            "\"logfile\": \"/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log\" },",
                                             "\"metrics\": {",
                                             "\"metrics_collected\": {",
                                             "\"statsd\": {",
