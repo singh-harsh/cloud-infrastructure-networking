@@ -176,7 +176,7 @@
                                         "",
                                         [
                                             "sudo echo '{",
-                                            "\"Agent\": { ",
+                                            "\"agent\": { ",
                                             "\"metrics_collection_interval\": 10,",
                                             "\"region\": \"us-east-1\",",
                                             "\"logfile\": \"/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log\" },",

@@ -30,7 +30,7 @@ public class AccountController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public Date getDate() {
-
+        LOGGER.info(statsDClient.toString());
         statsDClient.increment("endpoint.homepage.http.get");
         return new Date();
     }
