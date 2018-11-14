@@ -198,20 +198,7 @@
                                         ]
                                     ]
                                 },
-                                "cd /etc/systemd/system",
-                                "sudo touch cloudWatch.service",
-                                "sudo chmod 777 cloudWatch.service",
-                                "sudo echo '[Unit]' >> cloudWatch.service",
-                                "sudo echo 'Description=Service for CloudWatch agent' >> cloudWatch.service",
-                                "sudo echo 'After=rc-local.service' >> cloudWatch.service",
-                                "sudo echo '[Service]' >> cloudWatch.service",
-                                "sudo echo 'Type=simple' >> cloudWatch.service",
-                                "sudo echo 'Restart=always' >> cloudWatch.service",
-                                "sudo echo 'KillMode=process' >> cloudWatch.service",
-                                "sudo echo 'TimeoutSec=infinity' >> cloudWatch.service",
-                                "sudo echo 'ExecStart=/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s' >> cloudWatch.service",
-                                "sudo echo '[Install]' >> cloudWatch.service",
-                                "sudo echo 'WantedBy=multi-user.target' >> cloudWatch.service"
+                                "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s"
                             ]
                         ]
                     }
