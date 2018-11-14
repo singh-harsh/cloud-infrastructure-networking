@@ -111,6 +111,9 @@
                                 "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
                                 "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
                                 "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
+                                "sudo echo 'export PUBLISHMETRICS=true' >> bin/setenv.sh",
+                                "sudo echo 'export METRICSHOSTNAME=localhost' >> bin/setenv.sh",
+                                "sudo echo 'export METRICPORT=8125' >> bin/setenv.sh",
                                 {
                                     "Fn::Join": [
                                         "",
@@ -174,15 +177,15 @@
                                         [
                                             "sudo echo '{",
                                             "\"Agent\": { ",
-                                            "\"metrics_collection_interval\": 60,",
+                                            "\"metrics_collection_interval\": 10,",
                                             "\"region\": \"us-east-1\",",
                                             "\"logfile\": \"/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log\" },",
                                             "\"metrics\": {",
                                             "\"metrics_collected\": {",
                                             "\"statsd\": {",
                                             "\"service_address\": \":8125\",",
-                                            "\"metrics_collection_interval\": 60,",
-                                            "\"metrics_aggregation_interval\": 300 } } },",
+                                            "\"metrics_collection_interval\": 10,",
+                                            "\"metrics_aggregation_interval\": 0 } } },",
                                             "\"logs\": {",
                                             "\"logs_collected\": {",
                                             "\"files\": {",

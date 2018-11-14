@@ -3,6 +3,7 @@ package com.neu.controller;
 import com.neu.data.AccountRepository;
 import com.neu.pojo.Account;
 import com.neu.service.SNSService;
+import com.timgroup.statsd.StatsDClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class AccountController {
     private static final Log LOGGER = LogFactory.getLog(AccountController.class);
 
     @Autowired
+    private StatsDClient statsDClient;
+
+    @Autowired
     private SNSService snsService;
 
     @Autowired
@@ -26,12 +30,14 @@ public class AccountController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public Date getDate() {
+
+        statsDClient.increment("endpoint.homepage.http.get");
         return new Date();
     }
 
     @RequestMapping(value = "/user/register", method = RequestMethod.POST)
     public ResponseEntity<String> registerUser(@RequestBody Account account) {
-
+        statsDClient.increment("endpoint.register.http.post");
         if (!accountRepository.existsByEmail(account.getEmail())) {
             LOGGER.debug("Account does not exist!!");
             if(!Account.VALID_EMAIL_ADDRESS_REGEX.matcher(account.getEmail()).matches()) {
@@ -46,6 +52,7 @@ public class AccountController {
 
     @RequestMapping(value = "/user/reset", method = RequestMethod.GET)
     public ResponseEntity<String> resetPassword(@RequestParam String email) {
+        statsDClient.increment("endpoint.reset.http.get");
         if(accountRepository.existsByEmail(email)) {
             snsService.sendMessageToTopic(email);
             return new ResponseEntity<>("SNS Notified", HttpStatus.OK);
