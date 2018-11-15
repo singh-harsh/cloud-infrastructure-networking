@@ -409,47 +409,8 @@
                     "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
                     "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
                     "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
-                ]
-            }
-        },
-        "CloudWatchPolicy": {
-            "Type": "AWS::IAM::Policy",
-            "Properties": {
-                "PolicyName": "CloudWatchLogsPolicy",
-                "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "logs:Create*",
-                                "logs:CreateLogStream",
-                                "logs:PutLogEvents",
-                                "logs:DescribeLogStreams",
-                                "s3:GetObject"
-                            ],
-                            "Resource": [
-                                "arn:aws:logs:*:*:*",
-                                "arn:aws:s3:::*"
-                            ]
-                        },
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "cloudwatch:PutMetricData",
-                                "ec2:DescribeTags"
-                            ],
-                            "Resource": [
-                                "*"
-                            ]
-                        }
-                    ]
-                },
-                "Roles": [
-                    {
-                        "Ref": "CloudWatchRole"
-                    }
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
+                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
                 ]
             }
         }

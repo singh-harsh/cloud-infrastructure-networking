@@ -39,14 +39,17 @@ public class AccountController {
     public ResponseEntity<String> registerUser(@RequestBody Account account) {
         statsDClient.increment("endpoint.register.http.post");
         if (!accountRepository.existsByEmail(account.getEmail())) {
-            LOGGER.debug("Account does not exist!!");
+            LOGGER.info("Account does not exist!!");
             if(!Account.VALID_EMAIL_ADDRESS_REGEX.matcher(account.getEmail()).matches()) {
+                LOGGER.info("Invalid email request");
                 return new ResponseEntity<>(
                         "Invalid email format", HttpStatus.PRECONDITION_FAILED);
             }
             accountRepository.save(account);
+            LOGGER.info("Account successfully created!!");
             return new ResponseEntity<>("Account successfully created!!", HttpStatus.CREATED);
         }
+        LOGGER.info("Account already exists!!");
         return new ResponseEntity<>("Account already exists!!", HttpStatus.BAD_REQUEST);
     }
 
@@ -55,6 +58,7 @@ public class AccountController {
         statsDClient.increment("endpoint.reset.http.get");
         if(accountRepository.existsByEmail(email)) {
             snsService.sendMessageToTopic(email);
+            LOGGER.info("SNS Notified!!");
             return new ResponseEntity<>("SNS Notified", HttpStatus.OK);
         }
         return new ResponseEntity<>("Username does not exist!!", HttpStatus.PRECONDITION_FAILED);

@@ -100,8 +100,6 @@
                                 "chmod g+x conf",
                                 "chown -R tomcat webapps/ work/ temp/ logs/ conf/",
                                 "sudo touch bin/setenv.sh",
-                                "sudo touch logs/csye6225.log",
-                                "sudo chmod 777 logs/csye6225.log",
                                 "sudo chmod 777 bin/setenv.sh",
                                 "sudo echo 'export USERNAME=csye6225master' >> bin/setenv.sh",
                                 "sudo echo 'export PASSWORD=csye6225password' >> bin/setenv.sh",
@@ -152,7 +150,6 @@
                                 "echo 'Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid' >> tomcat.service",
                                 "echo 'Environment=CATALINA_HOME=/opt/tomcat' >> tomcat.service",
                                 "echo 'Environment=CATALINA_BASE=/opt/tomcat' >> tomcat.service",
-                                "echo 'Environment=CATALINA_OUT=/opt/tomcat/logs/csye6225.log' >> tomcat.service",
                                 "echo 'Environment=\"CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC\"' >> tomcat.service",
                                 "echo 'ExecStart=/opt/tomcat/bin/startup.sh' >> tomcat.service",
                                 "echo 'ExecStop=/bin/kill -15 $MAINPID' >> tomcat.service",
@@ -179,7 +176,7 @@
                                             "\"agent\": { ",
                                             "\"metrics_collection_interval\": 10,",
                                             "\"region\": \"us-east-1\",",
-                                            "\"logfile\": \"/opt/aws/amazon-cloudwatch-agent/logs/amazon-cloudwatch-agent.log\" },",
+                                            "\"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\" },",
                                             "\"metrics\": {",
                                             "\"metrics_collected\": {",
                                             "\"statsd\": {",
@@ -190,7 +187,7 @@
                                             "\"logs_collected\": {",
                                             "\"files\": {",
                                             "\"collect_list\": [ {",
-                                            "\"file_path\": \"/opt/tomcat/logs/csye6225.log\",",
+                                            "\"file_path\": \"/opt/tomcat/logs/catalina.out\",",
                                             "\"log_group_name\": \"csye6225_fall2018\",",
                                             "\"log_stream_name\": \"webapi\" } ] } },",
                                             "\"log_stream_name\": \"cloudwatch_log_stream\" }",
@@ -262,12 +259,12 @@
                 },
                 "KeySchema": [
                     {
-                        "AttributeName": "Id",
-                        "KeyType": "RANGE"
-                    },
-                    {
                         "AttributeName": "Email",
                         "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "Id",
+                        "KeyType": "RANGE"
                     }
                 ],
                 "ProvisionedThroughput": {
