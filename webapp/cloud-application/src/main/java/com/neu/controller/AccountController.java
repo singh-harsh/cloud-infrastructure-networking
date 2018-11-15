@@ -6,6 +6,8 @@ import com.neu.service.SNSService;
 import com.timgroup.statsd.StatsDClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,7 @@ import java.util.Date;
 @RestController("/")
 public class AccountController {
 
-    private static final Log LOGGER = LogFactory.getLog(AccountController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
     private StatsDClient statsDClient;

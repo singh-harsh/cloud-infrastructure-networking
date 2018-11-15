@@ -9,6 +9,8 @@ import com.neu.service.StorageService;
 import com.timgroup.statsd.StatsDClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ import java.util.UUID;
 @RestController
 public class TransactionController {
 
-    private static final Log LOGGER = LogFactory.getLog(TransactionController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionController.class);
 
     @Autowired
     private StatsDClient statsDClient;
@@ -41,7 +43,7 @@ public class TransactionController {
 
     @PostMapping(value = "/transaction/create")
     public ResponseEntity<?> createTransaction(@RequestBody @Valid Transaction transaction, Authentication authentication) {
-        statsDClient.increment("endpoint.createtransaction.http.post");
+        statsDClient.incrementCounter("endpoint.createtransaction.http.post");
         if (!Transaction.isEmpty(transaction)) {
             String username = authentication.getName();
             transaction.setId(UUID.randomUUID().toString());
@@ -54,13 +56,14 @@ public class TransactionController {
 
     @GetMapping(value = "/transaction/view")
     public ResponseEntity<List<Transaction>> viewTransaction(Authentication authentication) {
-        statsDClient.increment("endpoint.viewtransation.http.get");
+        statsDClient.incrementCounter("endpoint.viewtransation.http.get");
         List<Transaction> transactionByAccount_email = transactionRepository.findTransactionByAccount_Email(authentication.getName());
         return new ResponseEntity<>(transactionByAccount_email, HttpStatus.OK);
     }
 
     @PutMapping(value = "/transaction/update/{id}")
     public ResponseEntity<?> updateTransaction(@PathVariable String id, Authentication authentication, @RequestBody @Valid Transaction transaction) {
+        statsDClient.incrementCounter("endpoint.updatetransaction.http.put");
         statsDClient.increment("endpoint.updatetransaction.http.put");
         if (!Transaction.isEmpty(transaction)) {
             Transaction trans = transactionRepository.findTransactionByIdAndAccount_Email(id, authentication.getName());

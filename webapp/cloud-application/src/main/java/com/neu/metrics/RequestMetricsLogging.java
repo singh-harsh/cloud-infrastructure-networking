@@ -32,7 +32,6 @@ public class RequestMetricsLogging {
             return new NonBlockingStatsDClient("csye6225", metricsServerHost, metricsServerPort);
 
         }
-
         return new NoOpStatsDClient();
     }
 }
