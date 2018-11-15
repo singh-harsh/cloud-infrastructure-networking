@@ -32,7 +32,8 @@
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
+                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
                 ],
                 "AssumeRolePolicyDocument": {
                     "Version": "2012-10-17",
@@ -314,8 +315,7 @@
                 "InstanceProfileName": "CodeDeployEC2ServiceRoleProfile",
                 "Roles": [
                     {
-                        "Ref": "Ec2ServiceRole",
-                        "Ref": "CloudWatchRole"
+                        "Ref": "Ec2ServiceRole"
                     }
                 ]
             }
@@ -382,36 +382,6 @@
                     "arn:aws:iam::aws:policy/AWSXrayFullAccess"
                 ],
                 "RoleName": "LambdaSnsExecutionRole"
-            }
-        },
-        "CloudWatchRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": [
-                                    "ec2.amazonaws.com"
-                                ]
-                            },
-                            "Action": [
-                                "sts:AssumeRole"
-                            ]
-                        }
-                    ]
-                },
-                "Path": "/",
-                "RoleName": "CloudWatchRole",
-                "ManagedPolicyArns": [
-                    "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-                    "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-                    "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-                    "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
-                    "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
-                ]
             }
         }
     },
