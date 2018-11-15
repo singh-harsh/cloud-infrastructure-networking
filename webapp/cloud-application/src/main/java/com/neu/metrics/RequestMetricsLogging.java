@@ -28,9 +28,8 @@ public class RequestMetricsLogging {
         LOGGER.info(publishMetrics);
         LOGGER.info(metricsServerHost);
         LOGGER.info(metricsServerPort);
-        if (publishMetrics) {
-            return new NonBlockingStatsDClient("csye6225", metricsServerHost, metricsServerPort);
-
+        if (true) {
+            return new NonBlockingStatsDClient("csye6225", "localhost", 8125);
         }
         return new NoOpStatsDClient();
     }
