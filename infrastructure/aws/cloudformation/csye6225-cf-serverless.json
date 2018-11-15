@@ -1,6 +1,12 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Application stack",
+    "Parameters": {
+        "s3Lambda": {
+            "Type": "String",
+            "Default": "code-deploy.csye6225-fall2018-singhhar.me.TLD"
+        }
+    },
     "Resources": {
         "SNSTopicPasswordReset": {
             "Type": "AWS::SNS::Topic",
@@ -11,12 +17,15 @@
         "PasswordResetLambda": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
+                "FunctionName":"PasswordResetLambda",
                 "Handler": "index.handler",
                 "Role": {
                     "Fn::ImportValue": "LambdaExceutionRole"
                 },
                 "Code": {
-                    "S3Bucket": "lambda.csye6225-fall2018-singhhar.me",
+                    "S3Bucket": {
+                        "Ref": "s3Lambda"
+                    },
                     "S3Key": "csye6225-lambda.zip"
                 },
                 "Runtime": "nodejs8.10",
