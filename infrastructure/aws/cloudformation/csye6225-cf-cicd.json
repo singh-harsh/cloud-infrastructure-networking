@@ -4,7 +4,11 @@
     "Parameters": {
         "s3BucketCodeDeployName": {
             "Type": "String",
-            "Default": "code-deploy.csye6225-fall2018-singhhar.me.TLD"
+            "Default": "code-deploy.csye6225-fall2018-singhhar.me"
+        },
+        "s3LambdaUpload":{
+            "Type": "String",
+            "Default": "code-deploy.csye6225-fall2018-singhhar.me"
         },
         "region": {
             "Type": "String",
@@ -297,6 +301,18 @@
                                             "arn:aws:s3:::",
                                             {
                                                 "Ref": "s3BucketCodeDeployName"
+                                            },
+                                            "/*"
+                                        ]
+                                    ]
+                                },
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "arn:aws:s3:::",
+                                            {
+                                                "Ref": "s3LambdaUpload"
                                             },
                                             "/*"
                                         ]
