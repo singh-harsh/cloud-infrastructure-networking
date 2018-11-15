@@ -196,7 +196,7 @@
                                         ]
                                     ]
                                 },
-                                "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s",
+                                "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/amazon-cloudwatch-agent.json -s",
                                 "cd /opt",
                                 "sudo wget https://s3.amazonaws.com/configfileforcloudwatch/amazon-cloudwatch-agent.service",
                                 "sudo cp amazon-cloudwatch-agent.service /usr/lib/systemd/system/",
