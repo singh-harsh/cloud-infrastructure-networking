@@ -109,6 +109,9 @@
                                 "sudo echo 'export FILEPATH=/tmp/' >> bin/setenv.sh",
                                 "sudo echo 'export ENDPOINT=https://s3.us-east-1.amazonaws.com' >> bin/setenv.sh",
                                 "sudo echo 'export TOPIC=password_reset' >> bin/setenv.sh",
+                                "sudo echo 'export PUBLISHMETRICS=true' >> bin/setenv.sh",
+                                "sudo echo 'export METRICSHOSTNAME=localhost' >> bin/setenv.sh",
+                                "sudo echo 'export METRICPORT=8125' >> bin/setenv.sh",
                                 {
                                     "Fn::Join": [
                                         "",
@@ -159,7 +162,46 @@
                                 "echo 'WantedBy=multi-user.target' >> tomcat.service",
                                 "systemctl daemon-reload",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service"
+                                "systemctl start tomcat.service",
+                                "sudo mkdir -p /tmp/AmazonCloudWatchAgent",
+                                "cd /tmp/AmazonCloudWatchAgent",
+                                "sudo wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
+                                "sudo rpm -U ./amazon-cloudwatch-agent.rpm",
+                                "sudo touch /opt/amazon-cloudwatch-agent.json",
+                                {
+                                    "Fn::Join": [
+                                        "",
+                                        [
+                                            "sudo echo '{",
+                                            "\"agent\": { ",
+                                            "\"metrics_collection_interval\": 10,",
+                                            "\"region\": \"us-east-1\",",
+                                            "\"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\" },",
+                                            "\"metrics\": {",
+                                            "\"metrics_collected\": {",
+                                            "\"statsd\": {",
+                                            "\"service_address\": \":8125\",",
+                                            "\"metrics_collection_interval\": 10,",
+                                            "\"metrics_aggregation_interval\": 0 } } },",
+                                            "\"logs\": {",
+                                            "\"logs_collected\": {",
+                                            "\"files\": {",
+                                            "\"collect_list\": [ {",
+                                            "\"file_path\": \"/opt/tomcat/logs/catalina.out\",",
+                                            "\"log_group_name\": \"csye6225_fall2018\",",
+                                            "\"log_stream_name\": \"webapi\",",
+                                            "\"timestamp_format\": \"%H:%M:%S %y %b %-d\" } ] } },",
+                                            "\"log_stream_name\": \"cloudwatch_log_stream\" }",
+                                            "}' > /opt/amazon-cloudwatch-agent.json"
+                                        ]
+                                    ]
+                                },
+                                "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/amazon-cloudwatch-agent.json -s",
+                                "cd /opt",
+                                "sudo wget https://s3.amazonaws.com/configfileforcloudwatch/amazon-cloudwatch-agent.service",
+                                "sudo cp amazon-cloudwatch-agent.service /usr/lib/systemd/system/",
+                                "sudo systemctl enable amazon-cloudwatch-agent.service",
+                                "sudo systemctl start amazon-cloudwatch-agent.service"
                             ]
                         ]
                     }
@@ -211,12 +253,24 @@
                     {
                         "AttributeName": "Id",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "Email",
+                        "AttributeType": "S"
                     }
                 ],
+                "TimeToLiveSpecification": {
+                    "AttributeName": "ttl",
+                    "Enabled": true
+                },
                 "KeySchema": [
                     {
-                        "AttributeName": "Id",
+                        "AttributeName": "Email",
                         "KeyType": "HASH"
+                    },
+                    {
+                        "AttributeName": "Id",
+                        "KeyType": "RANGE"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -290,50 +344,6 @@
                         "Value": "My SQL Database"
                     }
                 ]
-            }
-        },
-        "PasswordResetLambda": {
-            "Type": "AWS::Lambda::Function",
-            "Properties": {
-                "Handler": "com.neu.lambda.Handler",
-                "Role": {
-                    "Fn::GetAtt": [
-                        {
-                            "Fn::ImportValue": "LambdaRole"
-                        },
-                        "Arn"
-                    ]
-                },
-                "Code": {
-                    "S3Bucket": {
-                        "Fn::ImportValue": "S3BucketCodeDeploy"
-                    },
-                    "S3Key": "csye6225-lambda.zip"
-                },
-                "Runtime": "java8",
-                "Timeout": 25,
-                "TracingConfig": {
-                    "Mode": "Active"
-                }
-            }
-        },
-        "SNSTopicPasswordReset": {
-            "Type": "AWS::SNS::Topic",
-            "Properties": {
-                "TopicName": "password_reset"
-            }
-        },
-        "LambdaResourcePolicy": {
-            "Type": "AWS::Lambda::Permission",
-            "Properties": {
-                "FunctionName": {
-                    "Ref": "PasswordResetLambda"
-                },
-                "Principal": "sns.amazonaws.com",
-                "Action": "lambda:InvokeFunction",
-                "SourceArn": {
-                    "Ref": "SNSTopicPasswordReset"
-                }
             }
         }
     }

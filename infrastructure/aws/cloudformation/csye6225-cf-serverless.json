@@ -1,0 +1,58 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Application stack",
+    "Resources": {
+        "SNSTopicPasswordReset": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "TopicName": "password_reset"
+            }
+        },
+        "PasswordResetLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "index.handler",
+                "Role": {
+                    "Fn::ImportValue": "LambdaExceutionRole"
+                },
+                "Code": {
+                    "S3Bucket": "lambda.csye6225-fall2018-singhhar.me",
+                    "S3Key": "csye6225-lambda.zip"
+                },
+                "Runtime": "nodejs8.10",
+                "Timeout": 25,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        },
+        "MySubscription": {
+            "Type": "AWS::SNS::Subscription",
+            "Properties": {
+                "Endpoint": {
+                    "Fn::GetAtt": [
+                        "PasswordResetLambda",
+                        "Arn"
+                    ]
+                },
+                "Protocol": "lambda",
+                "TopicArn": {
+                    "Ref": "SNSTopicPasswordReset"
+                }
+            }
+        },
+        "LambdaResourcePolicy": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+                "FunctionName": {
+                    "Ref": "PasswordResetLambda"
+                },
+                "Principal": "sns.amazonaws.com",
+                "Action": "lambda:InvokeFunction",
+                "SourceArn": {
+                    "Ref": "SNSTopicPasswordReset"
+                }
+            }
+        }
+    }
+}

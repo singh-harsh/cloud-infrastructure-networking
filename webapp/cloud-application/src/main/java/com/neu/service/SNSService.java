@@ -22,7 +22,7 @@ public class SNSService {
     private static final Log LOGGER = LogFactory.getLog(SNSService.class);
 
     @Value("${topicName}")
-    private String topicName = "password_reset";
+    private String topicName;
 
     public void sendMessageToTopic(String email) {
         PublishRequest publishRequest = new PublishRequest(emailTopic.getTopicArn(), email);
@@ -35,12 +35,13 @@ public class SNSService {
         this.amazonSNS = AmazonSNSClientBuilder.standard().withCredentials(provider).withRegion(Regions.US_EAST_1)
                 .build();
         ListTopicsResult topics = amazonSNS.listTopics();
-        for(Topic topic : topics.getTopics()) {
-            if(topic.toString().equals(topicName)) {
+        for (Topic topic : topics.getTopics()) {
+            LOGGER.info(topic.toString() + " : " + topic.getTopicArn());
+            if (topic.toString().contains(topicName)) {
                 emailTopic = topic;
                 return;
             }
         }
-        LOGGER.warn("The requested topic : " + topicName + " was not found");
+        LOGGER.error("The requested topic " + topicName + " was not found");
     }
 }
