@@ -1,6 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Application stack",
+    "Description": "Auto Scaling application stack",
     "Parameters": {
         "domainName": {
             "Type": "String"
@@ -13,6 +13,14 @@
         },
         "DNSRecordName": {
             "Type": "String"
+        },
+        "Ec2TagValue": {
+            "Type": "String",
+            "Default": ""
+        },
+        "StackName": {
+            "Type": "String",
+            "Default": ""
         }
     },
     "Resources": {
@@ -52,7 +60,15 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "csye6225-webapp"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "-csye6225-webapp-security-group"
+                            ]
+                        }
                     }
                 ]
             }
@@ -77,7 +93,15 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "csye6225-rds"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "-csye6225-rds-security-group"
+                            ]
+                        }
                     }
                 ]
             }
@@ -85,7 +109,7 @@
         "LoadBalancerSecurityGroup": {
             "Type": "AWS::EC2::SecurityGroup",
             "Properties": {
-                "GroupDescription": "Allow http to client host",
+                "GroupDescription": "Security group for every instances attached",
                 "VpcId": {
                     "Fn::ImportValue": "Networking-VpcId"
                 },
@@ -113,7 +137,15 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "csye6225-webapp"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "-csye6225-loadbalancer-security-group"
+                            ]
+                        }
                     }
                 ]
             }
@@ -121,7 +153,7 @@
         "MyEc2Instance": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
-                "AssociatePublicIpAddress": "false",
+                "AssociatePublicIpAddress": "true",
                 "KeyName": "csye6225",
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
@@ -296,10 +328,21 @@
                         "Fn::ImportValue": "Networking-SubnetId2"
                     }
                 ],
-                "TargetGroupARNs": [{
-                    "Ref": "ALBTargetGroup"
-                }]
+                "TargetGroupARNs": [
+                    {
+                        "Ref": "ALBTargetGroup"
+                    }
+                ]
             },
+            "Tags": [
+                {
+                    "Key": "Name",
+                    "Value": {
+                        "Ref": "Ec2TagValue"
+                    },
+                    "PropagateAtLaunch": "true"
+                }
+            ],
             "DependsOn": "ALBListener"
         },
         "WebServerScaleUpPolicy": {
@@ -380,9 +423,11 @@
             "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
             "Properties": {
                 "Scheme": "internet-facing",
-                "SecurityGroups": [{
-                    "Ref": "LoadBalancerSecurityGroup"
-                }],
+                "SecurityGroups": [
+                    {
+                        "Ref": "LoadBalancerSecurityGroup"
+                    }
+                ],
                 "Name": "csye6225LoadBalancer",
                 "Subnets": [
                     {
@@ -406,7 +451,15 @@
                 "Tags": [
                     {
                         "Key": "NAME",
-                        "Value": "CSYE6225"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "-csye6225-alb-target-group"
+                            ]
+                        }
                     }
                 ]
             }
@@ -485,6 +538,55 @@
                 ]
             }
         },
+        "CodeDeployApplication": {
+            "Type": "AWS::CodeDeploy::Application",
+            "Properties": {
+                "ApplicationName": "CodeDeployMyWebApi"
+            }
+        },
+        "DeploymentGroup": {
+            "Type": "AWS::CodeDeploy::DeploymentGroup",
+            "Properties": {
+                "ApplicationName": {
+                    "Ref": "CodeDeployApplication"
+                },
+                "DeploymentConfigName": "CodeDeployDefault.OneAtATime",
+                "DeploymentGroupName": "CodeDeployApplicationGroup",
+                "AutoScalingGroups": [
+                    {
+                        "Ref": "WebServerGroup"
+                    }
+                ],
+                "LoadBalancerInfo": {
+                    "ElbInfoList": [
+                        {
+                            "Name": {
+                                "Fn::GetAtt": [
+                                    "ApplicationLoadBalancer",
+                                    "LoadBalancerName"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "DeploymentStyle": {
+                    "DeploymentType": "IN_PLACE",
+                    "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
+                },
+                "Ec2TagFilters": [
+                    {
+                        "Key": "Name",
+                        "Type": "KEY_AND_VALUE",
+                        "Value": {
+                            "Ref": "Ec2TagValue"
+                        }
+                    }
+                ],
+                "ServiceRoleArn": {
+                    "Fn::ImportValue": "CodeDeployArn"
+                }
+            }
+        },
         "MyDynamoDBTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
@@ -520,7 +622,15 @@
                 "Tags": [
                     {
                         "Key": "Name",
-                        "Value": "csye6225-DynamoDB"
+                        "Value": {
+                            "Fn::Join": [
+                                "",
+                                {
+                                    "Ref": "StackName"
+                                },
+                                "-csye6225-DynamoDB"
+                            ]
+                        }
                     },
                     {
                         "Key": "Application",
