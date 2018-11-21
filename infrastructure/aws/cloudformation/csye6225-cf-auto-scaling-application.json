@@ -253,7 +253,7 @@
                                 "sudo wget https://s3.amazonaws.com/configfileforcloudwatch/amazon-cloudwatch-agent.service",
                                 "sudo cp amazon-cloudwatch-agent.service /usr/lib/systemd/system/",
                                 "sudo systemctl enable amazon-cloudwatch-agent.service",
-                                "sudo systemctl start amazon-cloudwatch-agent.service" 
+                                "sudo systemctl start amazon-cloudwatch-agent.service"
                             ]
                         ]
                     }
