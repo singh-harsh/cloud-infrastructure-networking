@@ -22,4 +22,4 @@ if [[ $CreatedStackList = *"$cicdStackname"* ]]; then
 fi
 
 #APPLICATION STACK CREATION CALL
-sh ./csye6225-aws-cf-create-application-stack.sh
+sh ./csye6225-aws-cf-create-auto-scaling-application-stack.sh
