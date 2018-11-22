@@ -63,10 +63,12 @@
                         "Value": {
                             "Fn::Join": [
                                 "",
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "-csye6225-webapp-security-group"
+                                [
+                                    {
+                                        "Ref": "StackName"
+                                    },
+                                    "-csye6225-webapp-security-group"
+                                ]
                             ]
                         }
                     }
@@ -96,10 +98,12 @@
                         "Value": {
                             "Fn::Join": [
                                 "",
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "-csye6225-rds-security-group"
+                                [
+                                    {
+                                        "Ref": "StackName"
+                                    },
+                                    "-csye6225-rds-security-group"
+                                ]
                             ]
                         }
                     }
@@ -140,10 +144,12 @@
                         "Value": {
                             "Fn::Join": [
                                 "",
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "-csye6225-loadbalancer-security-group"
+                                [
+                                    {
+                                        "Ref": "StackName"
+                                    },
+                                    "-csye6225-loadbalancer-security-group"
+                                ]
                             ]
                         }
                     }
@@ -153,7 +159,7 @@
         "MyEc2Instance": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
-                "AssociatePublicIpAddress": "true",
+                "AssociatePublicIpAddress": "false",
                 "KeyName": "csye6225",
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
@@ -332,17 +338,17 @@
                     {
                         "Ref": "ALBTargetGroup"
                     }
+                ],
+                "Tags": [
+                    {
+                        "Key": "Name",
+                        "Value": {
+                            "Ref": "Ec2TagValue"
+                        },
+                        "PropagateAtLaunch": "true"
+                    }
                 ]
             },
-            "Tags": [
-                {
-                    "Key": "Name",
-                    "Value": {
-                        "Ref": "Ec2TagValue"
-                    },
-                    "PropagateAtLaunch": "true"
-                }
-            ],
             "DependsOn": "ALBListener"
         },
         "WebServerScaleUpPolicy": {
@@ -436,7 +442,9 @@
                     {
                         "Fn::ImportValue": "Networking-SubnetId2"
                     }
-                ]
+                ],
+                "Type": "application",
+                "IpAddressType": "ipv4"
             }
         },
         "ALBTargetGroup": {
@@ -454,10 +462,12 @@
                         "Value": {
                             "Fn::Join": [
                                 "",
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "-csye6225-alb-target-group"
+                                [
+                                    {
+                                        "Ref": "StackName"
+                                    },
+                                    "-csye6225-alb-target-group"
+                                ]
                             ]
                         }
                     }
@@ -625,10 +635,12 @@
                         "Value": {
                             "Fn::Join": [
                                 "",
-                                {
-                                    "Ref": "StackName"
-                                },
-                                "-csye6225-DynamoDB"
+                                [
+                                    {
+                                        "Ref": "StackName"
+                                    },
+                                    "-csye6225-DynamoDB"
+                                ]
                             ]
                         }
                     },
