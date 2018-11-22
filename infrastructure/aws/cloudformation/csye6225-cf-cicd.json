@@ -1,12 +1,12 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
-    "Description": "Ec2 block device mapping",
+    "Description": "Continous deployment continous integration roles and policies",
     "Parameters": {
         "s3BucketCodeDeployName": {
             "Type": "String",
             "Default": "code-deploy.csye6225-fall2018-singhhar.me"
         },
-        "s3LambdaUpload":{
+        "s3LambdaUpload": {
             "Type": "String",
             "Default": "code-deploy.csye6225-fall2018-singhhar.me"
         },
@@ -19,10 +19,6 @@
             "Default": ""
         },
         "travisIAMUsername": {
-            "Type": "String",
-            "Default": ""
-        },
-        "Ec2TagValue": {
             "Type": "String",
             "Default": ""
         },
@@ -336,41 +332,6 @@
                 ]
             }
         },
-        "CodeDeployApplication": {
-            "Type": "AWS::CodeDeploy::Application",
-            "Properties": {
-                "ApplicationName": "CodeDeployMyWebApi"
-            }
-        },
-        "DeploymentGroup": {
-            "Type": "AWS::CodeDeploy::DeploymentGroup",
-            "Properties": {
-                "ApplicationName": {
-                    "Ref": "CodeDeployApplication"
-                },
-                "DeploymentConfigName": "CodeDeployDefault.OneAtATime",
-                "DeploymentGroupName": "CodeDeployApplicationGroup",
-                "DeploymentStyle": {
-                    "DeploymentType": "IN_PLACE",
-                    "DeploymentOption": "WITHOUT_TRAFFIC_CONTROL"
-                },
-                "Ec2TagFilters": [
-                    {
-                        "Key": "Name",
-                        "Type": "KEY_AND_VALUE",
-                        "Value": {
-                            "Ref": "Ec2TagValue"
-                        }
-                    }
-                ],
-                "ServiceRoleArn": {
-                    "Fn::GetAtt": [
-                        "CodeDeployRole",
-                        "Arn"
-                    ]
-                }
-            }
-        },
         "LambdaExceutionRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
@@ -439,6 +400,18 @@
             },
             "Export": {
                 "Name": "LambdaExceutionRole"
+            }
+        },
+        "CodeDeployArnTag": {
+            "Description": "CodeDeploy Role",
+            "Value": {
+                "Fn::GetAtt": [
+                    "CodeDeployRole",
+                    "Arn"
+                ]
+            },
+            "Export": {
+                "Name": "CodeDeployArn"
             }
         }
     }
