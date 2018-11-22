@@ -323,6 +323,8 @@
                 "LaunchConfigurationName": {
                     "Ref": "MyEc2Instance"
                 },
+                "HealthCheckGracePeriod" :"300",
+                "HealthCheckType" :"EC2",
                 "MinSize": "3",
                 "MaxSize": "10",
                 "DesiredCapacity": "3",
