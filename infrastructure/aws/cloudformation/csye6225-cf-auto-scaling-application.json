@@ -165,7 +165,7 @@
         "MyEc2Instance": {
             "Type": "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
-                "AssociatePublicIpAddress": "false",
+                "AssociatePublicIpAddress": "true",
                 "KeyName": "csye6225",
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
