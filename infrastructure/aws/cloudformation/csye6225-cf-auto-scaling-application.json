@@ -1188,7 +1188,7 @@
                         "FieldToMatch": {
                             "Type": "URI"
                         },
-                        "PositionalConstraint": "START_WITH",
+                        "PositionalConstraint": "STARTS_WITH",
                         "TargetString": "/admin",
                         "TextTransformation": "URL_DECODE"
                     }
@@ -1217,7 +1217,7 @@
                             "Ref": "wafrAdminUrlStringSet"
                         },
                         "Negated": false,
-                        "Type": "IPMatch"
+                        "Type": "ByteMatch"
                     }
                 ]
             }
